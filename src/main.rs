@@ -10,19 +10,25 @@ use pine_os::println;
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    println!("Hello World{}", "!");
+    println!("Type anything");
 
-    #[cfg(test)]
-    test_main();
+    pine_os::init();
 
-    loop {}
+    use x86_64::registers::control::Cr3;
+
+    let (level_4_page_table, _) = Cr3::read();
+    println!("Level 4 page table at: {:?}", level_4_page_table.start_address());
+
+    // #[cfg(test)]
+    // test_main();
+    pine_os::halt();
 }
 
 #[cfg(not(test))]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    pine_os::halt();
 }
 
 #[cfg(test)]

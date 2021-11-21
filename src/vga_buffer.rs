@@ -1,4 +1,4 @@
-use core::fmt;
+use core::fmt::{Arguments, Result, Write};
 
 use lazy_static::lazy_static;
 use spin::Mutex;
@@ -118,8 +118,8 @@ impl Writer {
     }
 }
 
-impl fmt::Write for Writer {
-    fn write_str(&mut self, s: &str) -> fmt::Result {
+impl Write for Writer {
+    fn write_str(&mut self, s: &str) -> Result {
         self.write_string(s);
         Ok(())
     }
@@ -137,7 +137,7 @@ macro_rules! println {
 }
 
 #[doc(hidden)]
-pub fn _print(args: fmt::Arguments) {
+pub fn _print(args: Arguments) {
     use core::fmt::Write;
     use x86_64::instructions::interrupts;
 
@@ -154,7 +154,7 @@ fn test_println_simple() {
 #[test_case]
 fn test_println_many() {
     for _ in 0..200 {
-        println!("test_println_many output")
+        println!("test_println_many output");
     }
 }
 
